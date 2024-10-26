@@ -7,7 +7,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -42,6 +41,7 @@ if city and option:
 
     # Login and Search City
     login.login_to_propstream(USERNAME, PASSWORD, driver)
+    st.success("Login Successful")
 
     try:
         proceed_xpath = '//*[@id="root"]/div/div[2]/div/div/div[2]/div/div[3]/button[2]/div[1]'
@@ -53,7 +53,6 @@ if city and option:
     except TimeoutException:
         print("Element not found, proceeding with the alternative task.")
         login.search_city(city, driver)
-        st.success("Login Successful")
 
         # Select Filters
         filters.click_filter_button(driver)
