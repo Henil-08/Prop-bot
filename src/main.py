@@ -12,14 +12,23 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
-@st.cache_resource
-def get_driver():
-    return webdriver.Chrome(
-            service=Service(
-                ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
-            ),
-            options=options,
-        )
+## set up Streamlit 
+st.set_page_config(page_title="Prop-stream Bot", page_icon="🏢")
+st.title("Prop-stream Bot")
+
+# Initialize session state variables
+if 'city' not in st.session_state:
+    st.session_state['city'] = ""
+if 'option' not in st.session_state:
+    st.session_state['option'] = 'Standard'
+if 'inputs_locked' not in st.session_state:
+    st.session_state['inputs_locked'] = False
+if 'listings_data' not in st.session_state:
+    st.session_state['listings_data'] = None
+
+# User inputs
+city = st.text_input("Enter the City Name:", value=st.session_state['city'], disabled=st.session_state['inputs_locked'])
+option = st.selectbox('Select your search options', ('Standard', 'High Equity'), index=('Standard', 'High Equity').index(st.session_state['option']), disabled=st.session_state['inputs_locked'])
 
 options = Options()
 options.add_argument('--disable-gpu')
@@ -29,14 +38,29 @@ options.add_argument("--window-size=1920x1080")
 options.add_argument("--no-sandbox")  # Required for some environments
 options.add_argument("--disable-dev-shm-usage")  # Reduce memory usage
 
-## set up Streamlit 
-st.set_page_config(page_title="Prop-stream Bot", page_icon="🏢")
-st.title("Prop-stream Bot")
 
-city = st.text_input("Enter the City Name:")
-option = st.selectbox('Select your search options', ('Standard', 'High Equity'))
+@st.cache_resource
+def get_driver():
+    return webdriver.Chrome(
+            service=Service(
+                ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+            ),
+            options=options,
+        )
 
-if city and option:
+
+# Trigger data fetching only when the button is clicked
+if st.button("Fetch Listings Data") and city and option:
+    # Check if city has changed, reset if it has
+    if st.session_state['city'] != city:
+        st.session_state['listings_data'] = None  # Clear previous data
+        st.session_state['inputs_locked'] = False  # Unlock inputs for new data
+        st.session_state['city'] = city  # Store new city in session state
+        st.session_state['option'] = option
+
+    # Lock inputs to prevent re-triggering
+    st.session_state['inputs_locked'] = True
+
     driver = None
 
     # Initialize the WebDriver 
@@ -69,14 +93,21 @@ if city and option:
         total_pages = math.ceil(total_listings / listings_per_page)  # Calculate total pages
 
         all_listings_data = extract.get_search_data(driver, total_pages, total_listings)
+        st.session_state['listings_data'] = all_listings_data
         st.success("Search Complete")
 
-        csv = utility.save_to_csv(all_listings_data)
+# Enable download button if data is available in session state
+if st.session_state['listings_data']:
+    csv = utility.save_to_csv(st.session_state['listings_data'])  # Convert to CSV
+    st.download_button(
+        "Press to Download",
+        csv,
+        f"{city}_{option}.csv",
+        "text/csv",
+        key='download-csv'
+    )
 
-        st.download_button(
-            "Press to Download",
-            csv,
-            f"{city}_{option}.csv",
-            "text/csv",
-            key='download-csv'
-        )
+    # Allow resetting inputs for a new search
+    if st.button("New Search"):
+        st.session_state['inputs_locked'] = False
+        st.session_state['listings_data'] = None
