@@ -1,11 +1,11 @@
 import math
 import streamlit as st
 from selenium import webdriver
+from constants import USERNAME, PASSWORD
+from utils import login, utility, filters, extract
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from constants import USERNAME, PASSWORD
-from utils import login, utility, filters, extract
 
 @st.experimental_singleton
 def get_driver():
