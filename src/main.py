@@ -6,13 +6,20 @@ from utils import login, utility, filters, extract
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.os_manager import ChromeType
 
-options = webdriver.ChromeOptions()
-options.add_argument('--headless')
+@st.cache_resource
+def get_driver():
+    return webdriver.Chrome(
+            service=Service(
+                ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+            ),
+            options=options,
+        )
+
+options = Options()
 options.add_argument('--disable-gpu')
-options.add_argument('--window-size=1920,1200')
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
-                            options=options)
+options.add_argument('--headless')
 
 ## set up Streamlit 
 st.set_page_config(page_title="Prop-stream Bot", page_icon="🏢")
@@ -22,6 +29,9 @@ city = st.text_input("Enter the City Name:")
 option = st.selectbox('Select your search options', ('Standard', 'High Equity'))
 
 if city and option:
+    # Initialize the WebDriver 
+    driver = get_driver()
+
     # Login and Search City
     login.login_to_propstream(USERNAME, PASSWORD, driver)
     login.search_city(city, driver)
