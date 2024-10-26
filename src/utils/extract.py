@@ -84,6 +84,7 @@ def get_listings_data(driver, listings):
     
     # Get all listings
     for i in range (1, listings+1):
+        print(f"Extracting Listing {i}")
         try:
             detail_xpath = f'//*[@id="root"]/div/div[2]/div/div/div[3]/div[1]/div/section/div[2]/div/div/div/div/div[2]/div/div[{i}]/div[3]/div[1]/div[1]/a'
             detail = wait.until(EC.element_to_be_clickable((By.XPATH, detail_xpath)))
@@ -103,6 +104,7 @@ def get_search_data(driver, total_pages, total_listings):
     # Loop through all pages
     all_listings_data = []
     for page in range(1, total_pages + 1):
+        print(f"Extracting Page {page} of {total_pages}")
         # Get listings data from the current page
         if total_pages != 1:
             utility.go_to_page(driver, page)

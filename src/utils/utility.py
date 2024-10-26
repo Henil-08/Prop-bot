@@ -16,7 +16,8 @@ def get_total_listings(driver):
     ).text
 
     # Extract the number of listings and convert to int
-    total_listings = int(total_listings_text.split(" ")[-1].strip("()"))  # Use -1 to get the last element
+    total_listings = int(total_listings_text.split(" ")[-1].strip("()")) 
+    print(f"Total listings: {total_listings}")
     return total_listings
 
 def go_to_page(driver, page_number):
@@ -28,6 +29,7 @@ def go_to_page(driver, page_number):
         input_field.clear()
         input_field.send_keys(str(page_number))
         input_field.send_keys(Keys.RETURN)  # Simulate pressing Enter
+        print(f"Navigated to page {page_number}")
     except StaleElementReferenceException:
         go_to_page(driver, page_number)  # Retry if there's a StaleElementReferenceException
 

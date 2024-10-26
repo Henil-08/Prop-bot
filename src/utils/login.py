@@ -21,6 +21,7 @@ def login_to_propstream(username, password, driver):
 
     # Wait for URL to change after login
     wait.until(EC.url_changes(driver.current_url))
+    print("Login successful!")
 
 
 def search_city(city, driver):
@@ -35,3 +36,6 @@ def search_city(city, driver):
     suggestion_xpath = "//input[@aria-activedescendant='react-autowhatever-1--item-0']"
     wait.until(EC.presence_of_element_located((By.XPATH, suggestion_xpath)))
     search_box.send_keys(Keys.RETURN) 
+
+    print("First suggestion selected and search triggered.")
+    print(f"Search completed for city: {city}")

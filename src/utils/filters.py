@@ -13,6 +13,7 @@ def click_filter_button(driver):
         filter_button_xpath = "//*[@id='root']/div/div[2]/div/div/div[3]/div[1]/div/header/div[1]/div[1]/div[2]/div"
         filter_button = wait.until(EC.element_to_be_clickable((By.XPATH, filter_button_xpath)))
         filter_button.click() 
+        print("Filter button clicked and menu opened.")
     except Exception as e:
         print(f"An error occurred: {e}")
 
@@ -108,6 +109,7 @@ def select_filter_option(driver, option):
 
         # Close the filter tab
         close_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".icon-iconClose.src-app-Search-Header-style__SAkaa__iconClose")))
-        close_button.click()    
+        close_button.click()
+        print('Filters Applied')
     except Exception as e:
         print(f"An error occurred: {e}")
