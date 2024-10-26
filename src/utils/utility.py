@@ -12,7 +12,7 @@ def save_to_csv(data):
 def get_total_listings(driver):
     # Get the total number of listings
     total_listings_text = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//*[@id='root']/div/div[2]/div/div/div[3]/div[1]/div/section/div[2]/div/div/div/div/div[1]/div[1]/div[2]"))
+        EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div/div[2]/div/div/div[3]/div[1]/div/section/div[2]/div/div/div/div/div[1]/div[1]/div[2]'))
     ).text
 
     # Extract the number of listings and convert to int
