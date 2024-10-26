@@ -36,6 +36,7 @@ option = st.selectbox('Select your search options', ('Standard', 'High Equity'))
 
 if city and option:
     driver = None
+    
     # Initialize the WebDriver 
     driver = get_driver()
 
