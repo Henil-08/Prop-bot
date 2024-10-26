@@ -35,11 +35,15 @@ if city and option:
 
     # Login and Search City
     login.login_to_propstream(USERNAME, PASSWORD, driver)
+    st.success("Login Sucessful")
     login.search_city(city, driver)
+    st.success("Search Complete")
 
     # Select Filters
     filters.click_filter_button(driver)
+    st.success("Filter Clicked")
     filters.select_filter_option(driver, False) if option == 'Standard' else filters.select_filter_option(driver, True)
+    st.success("Filter Selected")
 
     # Get the total number of listings
     total_listings = utility.get_total_listings(driver)
